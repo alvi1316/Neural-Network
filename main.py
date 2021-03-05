@@ -1,3 +1,7 @@
 import numpy as np
+from dataset_input import DatasetInput
 
-print(np.random.randint(-5,5))
+data = DatasetInput()
+arr = data.readImage(60000)
+print(arr)
+data.showImage(arr)
