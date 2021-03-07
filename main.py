@@ -1,7 +1,5 @@
 import numpy as np
-from dataset_input import DatasetInput
+from layer import Layer
 
-data = DatasetInput()
-arr = data.readImage(60000)
-print(arr)
-data.showImage(arr)
+l1 = Layer("chips",[1,2,3,4],mode="init_read")
+l1.printLayer()
