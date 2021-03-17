@@ -1,4 +1,5 @@
 import math
+import json
 import numpy as np
 from neuron import Neuron
 
@@ -22,17 +23,12 @@ class Layer:
                 self.neurons.append(neuron)
         elif mode == "init_read":
             file = open(self.layerName+".txt","r")
-            str1 = file.readline()
-            arr1 = str1.split(" ")
-            self.neuronCount = int(arr1[0])
-            self.prevNeuronCount = int(arr1[1])
+            data = json.load(file)
+            self.neuronCount = data["neuronCount"]
+            self.prevNeuronCount = data["prevNeuronCount"]
             for i in range(self.neuronCount):
-                str2 = file.readline()
-                str2 = str2.replace('[','')
-                str2 = str2.replace(']','')
-                weightArr = np.fromstring(str2, dtype=float, sep=" ")
-                str2 = file.readline()
-                biasVal = int(str2)
+                weightArr = data["weight"+str(i+1)]
+                biasVal = data["bias"+str(i+1)]
                 neuron = Neuron(self.inputArr, weightArr, biasVal)
                 self.neurons.append(neuron)
         
@@ -67,15 +63,22 @@ class Layer:
         return self.output
 
     def printLayer(self):
+        print("neuronCount: ", self.neuronCount)
+        print("prevNeuronCount", self.prevNeuronCount)
         for neuron in self.neurons:
             neuron.printNeuron()
             
-    def saveFile(self):
-        file = open(self.layerName+".txt", "a")
-        file.write(str(self.neuronCount)+" "+str(self.prevNeuronCount))
-        file.write("\n")
+    def saveLayer(self):
+        data = {}
+        data["neuronCount"] = self.neuronCount
+        data["prevNeuronCount"] = self.prevNeuronCount
         for i in range(self.neuronCount):
-            file.write(np.array_str(self.neurons[i].getWeight()))
-            file.write("\n")
-            file.write(str(self.neurons[i].getBias()))
-            file.write("\n")
+            weightArr = self.neurons[i].getWeight()
+            weightArr = list(weightArr)
+            biasVal = self.neurons[i].getBias()
+            data["weight"+str(i+1)] = weightArr
+            data["bias"+str(i+1)] = biasVal
+        print(data)
+        file = open(self.layerName+".txt", "a")
+        json.dump(data, file)
+        file.close()

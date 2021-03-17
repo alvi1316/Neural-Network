@@ -1,5 +1,6 @@
 import numpy as np
 from layer import Layer
+from dataset_input import DatasetInput
 
-l1 = Layer("chips",[1,2,3,4],mode="init_read")
-l1.printLayer()
+
+
